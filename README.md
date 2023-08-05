@@ -1,8 +1,15 @@
 # URI::IDNA
 
+[![Gem Version](https://badge.fury.io/rb/uri-idna.svg)](https://rubygems.org/gems/uri-idna)
+[![Ruby](https://github.com/skryukov/uri-idna/actions/workflows/main.yml/badge.svg)](https://github.com/skryukov/uri-idna/actions/workflows/main.yml)
+
 A IDNA 2008, UTS 46 and Punycode implementation in pure Ruby.
 
 This gem provides a number of functions for converting internationalized domain names (IDNs) between the Unicode and ASCII Compatible Encoding (ACE) forms.
+
+<a href="https://evilmartians.com/?utm_source=rubocop-gradual&utm_campaign=project_page">
+<img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg" alt="Sponsored by Evil Martians" width="236" height="54">
+</a>
 
 ## Installation
 
