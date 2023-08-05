@@ -1,0 +1,33 @@
+AllCops:
+  NewCops: disable
+  TargetRubyVersion: 2.7
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/FormatStringToken:
+  Enabled: false
+
+Style/FormatString:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Metrics:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
