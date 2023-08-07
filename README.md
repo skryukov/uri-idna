@@ -7,7 +7,7 @@ A IDNA 2008, UTS 46 and Punycode implementation in pure Ruby.
 
 This gem provides a number of functions for converting internationalized domain names (IDNs) between the Unicode and ASCII Compatible Encoding (ACE) forms.
 
-<a href="https://evilmartians.com/?utm_source=rubocop-gradual&utm_campaign=project_page">
+<a href="https://evilmartians.com/?utm_source=uri-idna&utm_campaign=project_page">
 <img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg" alt="Sponsored by Evil Martians" width="236" height="54">
 </a>
 
@@ -63,7 +63,7 @@ URI::IDNA.lookup("Ῠ.me")
 
 ### Unicode UTS 46(TR46)
 
-The [UTS 46](https://www.unicode.org/reports/tr46) defines two IDN conversion functions: [ToASCII](https://www.unicode.org/reports/tr46/#ToASCII) and [ToUnicode](https://www.unicode.org/reports/tr46/#ToUnicode).
+The [UTS 46] defines two IDN conversion functions: [ToASCII](https://www.unicode.org/reports/tr46/#ToASCII) and [ToUnicode](https://www.unicode.org/reports/tr46/#ToUnicode).
 
 #### ToASCII
 
@@ -135,7 +135,7 @@ URI::IDNA::Punycode.decode("gdkl8fhk5egc")
 
 ### UTS 46 (also referenced as TS46)
 
-- [Unicode IDNA Compatibility Processing]
+- [Unicode IDNA Compatibility Processing][UTS 46]
 
 ## Development
 
@@ -175,10 +175,10 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/skryuk
 
 The gem is available as open source under the terms of the [MIT License].
 
-[RFC 5890]: (https://datatracker.ietf.org/doc/html/rfc5890)
-[RFC 5891]: (https://datatracker.ietf.org/doc/html/rfc5891)
-[RFC 5892]: (https://datatracker.ietf.org/doc/html/rfc5892)
-[RFC 5893]: (https://datatracker.ietf.org/doc/html/rfc5893)
-[RFC 3492]: (https://datatracker.ietf.org/doc/html/rfc3492)
-[Unicode IDNA Compatibility Processing]: (https://www.unicode.org/reports/tr46)
-[MIT License]: (https://opensource.org/licenses/MIT)
+[RFC 5890]: https://datatracker.ietf.org/doc/html/rfc5890
+[RFC 5891]: https://datatracker.ietf.org/doc/html/rfc5891
+[RFC 5892]: https://datatracker.ietf.org/doc/html/rfc5892
+[RFC 5893]: https://datatracker.ietf.org/doc/html/rfc5893
+[RFC 3492]: https://datatracker.ietf.org/doc/html/rfc3492
+[UTS 46]: https://www.unicode.org/reports/tr46
+[MIT License]: https://opensource.org/licenses/MIT
