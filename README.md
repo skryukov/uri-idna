@@ -15,7 +15,7 @@ This gem provides a number of functions for converting internationalized domain 
 
 Add to your Gemfile:
 ```ruby
-gem "idna-idna"
+gem "uri-idna"
 ```
 
 And then run `bundle install`.
