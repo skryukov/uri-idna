@@ -24,6 +24,10 @@ And then run `bundle install`.
 
 There are plenty of ways to convert IDNs between Unicode and ACE forms.
 
+### WHATWG
+
+- [URL Standard] – Standard used by modern browsers
+
 ### IDNA 2008
 
 The [RFC 5890] defines two protocols for IDN conversion: [Registration](https://datatracker.ietf.org/doc/html/rfc5891#section-4) and [Domain Name Lookup](https://datatracker.ietf.org/doc/html/rfc5891#section-5).
@@ -62,6 +66,8 @@ URI::IDNA.lookup("Ῠ.me")
 ```
 
 ### Unicode UTS 46(TR46)
+
+_Current revision: 31_
 
 The [UTS 46] defines two IDN conversion functions: [ToASCII](https://www.unicode.org/reports/tr46/#ToASCII) and [ToUnicode](https://www.unicode.org/reports/tr46/#ToUnicode).
 
@@ -147,7 +153,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 This gem uses Unicode data files to perform IDN conversion. To generate new Unicode data files, run `bundle exec rake idna:generate`.
 
-To specify Unicode version, use `UNICODE_VERSION` environment variable, e.g. `UNICODE_VERSION=14.0.0 bundle exec rake idna:generate`.
+To specify Unicode version, use `VERSION` environment variable, e.g. `VERSION=15.1.0 bundle exec rake idna:generate`.
 
 By default, used Unicode version is the one used by the Ruby version (`RbConfig::CONFIG["UNICODE_VERSION"]`).
 
@@ -157,11 +163,9 @@ Unicode data cached in the `tmp` directory by default, to change it, use `CACHE_
 
 ### Inspect Unicode data
 
-To inspect Unicode data, run `bundle exec rake idna:inspect[<HEX_CODE>]`.
+To inspect Unicode data, run `bundle exec rake 'idna:inspect[<HEX_CODE>]'`.
 
-To specify Unicode version, or cache directory, use `UNICODE_VERSION` or `CACHE_DIR` environment variables, e.g. `UNICODE_VERSION=15.0.0 bundle exec rake idna:inspect[1f495]`.
-
-Note: if you getting the `no matches found: idna:inspect[1f495]` error, try to escape the brackets: `bundle exec rake idna:inspect\[1f495\]`.
+To specify Unicode version, or cache directory, use `VERSION` or `CACHE_DIR` environment variables, e.g. `VERSION=15.1.0 bundle exec rake 'idna:inspect[1f495]'`.
 
 ### Update UTS 46 test suite data
 
@@ -181,4 +185,5 @@ The gem is available as open source under the terms of the [MIT License].
 [RFC 5893]: https://datatracker.ietf.org/doc/html/rfc5893
 [RFC 3492]: https://datatracker.ietf.org/doc/html/rfc3492
 [UTS 46]: https://www.unicode.org/reports/tr46
+[URL Standard]: https://url.spec.whatwg.org/#idna
 [MIT License]: https://opensource.org/licenses/MIT
