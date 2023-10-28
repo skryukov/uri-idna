@@ -15,21 +15,22 @@ module URI
             case status
             when "I"
               next
-            when "V"
+            when "V", "X"
               output += char
             when "M"
-              output += replacement
+              if uts46_transitional && code_point == 7838
+                output += "ss"
+              else
+                output += replacement
+              end
             when "D"
               output += uts46_transitional ? replacement : char
             when "3"
               if uts46_std3
-                raise InvalidCodepointError,
-                      "Codepoint #{code_point} not allowed in #{domain} via STD3 rules"
+                output += char
+              else
+                output += replacement || char
               end
-
-              output += replacement || char
-            else
-              raise InvalidCodepointError, "Codepoint #{code_point} not allowed in #{domain}"
             end
           end
           output.unicode_normalize(:nfc)
