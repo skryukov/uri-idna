@@ -99,7 +99,7 @@ RSpec.describe "Punycode" do
 
   describe ".encode" do
     tests.each do |decoded, encoded|
-      it "should return #{encoded} for #{decoded}" do
+      it "returns #{encoded} for #{decoded}" do
         expect(URI::IDNA::Punycode.encode(decoded)).to eq(encoded)
       end
     end
@@ -107,7 +107,7 @@ RSpec.describe "Punycode" do
 
   describe ".decode" do
     tests.each do |decoded, encoded|
-      it "should return #{decoded} for #{encoded}" do
+      it "returns #{decoded} for #{encoded}" do
         expect(URI::IDNA::Punycode.decode(encoded)).to eq(decoded)
       end
     end

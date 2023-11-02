@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UTS64Data
+class UTS46Data
   UTS46_STATUSES = {
     "valid" => ["V", false],
     "ignored" => ["I", false],

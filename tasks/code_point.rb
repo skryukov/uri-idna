@@ -89,7 +89,7 @@ class CodePoint
   end
 
   def ldh?
-    (value == 0x002d) || (0x0030..0x0039).include?(value) || (0x0061..0x007a).include?(value)
+    (value == 0x002d) || (0x0030..0x0039).cover?(value) || (0x0061..0x007a).cover?(value)
   end
 
   def join_control?
