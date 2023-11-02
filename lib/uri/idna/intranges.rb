@@ -23,12 +23,14 @@ module URI
           # we could be immediately ahead of a tuple (start, end)
           # with start < int_ <= end
           if pos > 0
-            left, right = decode_range(ranges[pos - 1])
+            r = ranges[pos - 1]
+            left = decode_left(r)
+            right = decode_right(r)
             return true if left <= int && int < right
           end
           # or we could be immediately behind a tuple (int_, end)
           if pos < ranges.length
-            left, = decode_range(ranges[pos])
+            left = decode_left(ranges[pos])
             return true if left == int
           end
           false
@@ -40,8 +42,14 @@ module URI
           (start << 32) | finish
         end
 
-        def decode_range(r)
-          [(r >> 32), (r & ((1 << 32) - 1))]
+        MASK = ((1 << 32) - 1)
+
+        def decode_right(r)
+          r & MASK
+        end
+
+        def decode_left(r)
+          r >> 32
         end
       end
     end

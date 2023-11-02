@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 require_relative "idna/version"
-require_relative "idna/process"
+require_relative "idna/punycode"
+require_relative "idna/base_processing"
+require_relative "idna/idna2008/processing"
+require_relative "idna/uts46/processing"
+require_relative "idna/whatwg/processing"
 
 module URI
   module IDNA
-    ALABEL_PREFIX = "xn--"
+    ACE_PREFIX = "xn--"
 
     class Error < StandardError; end
 
@@ -22,38 +26,40 @@ module URI
     class PunycodeError < Error; end
 
     class << self
-      UTS46_PARAMS = {
-        check_dot: true,
-        idna_validity: false,
-        uts46: true,
-        uts46_std3: true,
-        uts46_transitional: false,
-        contexto: false,
-      }.freeze
-
-      LOOKUP_PARAMS = {
-        hyphen_sides: false,
-        leading_combining: false,
-      }.freeze
-
-      def lookup(s, **params)
-        Process.new(**LOOKUP_PARAMS.merge(params)).lookup(s)
+      # IDNA2008 Lookup protocol defined in RFC 5891
+      # https://datatracker.ietf.org/doc/html/rfc5891#section-5
+      def lookup(domain_name, **options)
+        IDNA2008::Lookup.new(domain_name, **options).call
       end
 
-      def register(alabel: nil, ulabel: nil, **params)
-        Process.new(**params).register(alabel: alabel, ulabel: ulabel)
+      # IDNA2008 Registration protocol defined in RFC 5891
+      # https://datatracker.ietf.org/doc/html/rfc5891#section-4
+      def register(alabel: nil, ulabel: nil, **options)
+        IDNA2008::Registration.new(alabel: alabel, ulabel: ulabel, **options).call
       end
 
       # UTS46 ToUnicode process
       # https://unicode.org/reports/tr46/#ToUnicode
-      def to_unicode(s, **params)
-        Process.new(**UTS46_PARAMS.merge(params)).decode(s)
+      def to_unicode(domain_name, **options)
+        UTS46::ToUnicode.new(domain_name, **options).call
       end
 
       # UTS46 ToASCII process
       # https://unicode.org/reports/tr46/#ToASCII
-      def to_ascii(s, **params)
-        Process.new(**UTS46_PARAMS.merge(params)).encode(s)
+      def to_ascii(domain_name, **options)
+        UTS46::ToASCII.new(domain_name, **options).call
+      end
+
+      # WHATWG URL Standard domain to ASCII algorithm
+      # https://url.spec.whatwg.org/#idna
+      def whatwg_to_unicode(domain_name, **options)
+        WHATWG::ToUnicode.new(domain_name, **options).call
+      end
+
+      # WHATWG URL Standard domain to Unicode algorithm
+      # https://url.spec.whatwg.org/#idna
+      def whatwg_to_ascii(domain_name, **options)
+        WHATWG::ToASCII.new(domain_name, **options).call
       end
     end
   end

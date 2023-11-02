@@ -47,20 +47,21 @@ module URI
 
         def encode(input)
           input = input.codepoints
+          output = []
 
           n = INITIAL_N
           delta = 0
           bias = INITIAL_BIAS
 
-          output = input.select { |char| basic?(char) }
+          input.each { |cp| output << cp if cp < 0x80 }
           h = b = output.length
 
           output << DELIMITER if b > 0
 
           while h < input.length
             m = MAXINT
-            input.each do |char|
-              m = char if char >= n && char < m
+            input.each do |cp|
+              m = cp if cp >= n && cp < m
             end
 
             raise PunycodeError, "Arithmetic overflow" if m - n > (MAXINT - delta) / (h + 1)
@@ -68,12 +69,12 @@ module URI
             delta += (m - n) * (h + 1)
             n = m
 
-            input.each do |char|
-              if char < n
+            input.each do |cp|
+              if cp < n
                 delta += 1
                 raise PunycodeError, "Arithmetic overflow" if delta > MAXINT
               end
-              next unless char == n
+              next unless cp == n
 
               q = delta
               k = BASE
@@ -115,10 +116,11 @@ module URI
 
           b = input.rindex(DELIMITER) || 0
 
-          input[0, b].each do |char|
-            raise PunycodeError, "Invalid input" unless basic?(char)
+          0.upto(b - 1) do |idx|
+            cp = input[idx]
+            raise PunycodeError, "Invalid input" unless cp < 0x80
 
-            output << char
+            output << cp
           end
 
           inc = b > 0 ? b + 1 : 0
@@ -161,12 +163,6 @@ module URI
           end
 
           output.pack("U*")
-        end
-
-        private
-
-        def basic?(codepoint)
-          codepoint < 0x80
         end
       end
     end

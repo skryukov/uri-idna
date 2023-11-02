@@ -2,7 +2,7 @@
 
 module URI
   module IDNA
-    class Validation
+    module Validation
       # 4.2.3.4. Labels Containing Characters Written Right to Left
       # https://datatracker.ietf.org/doc/html/rfc5891#section-4.2.3.4
       # https://datatracker.ietf.org/doc/html/rfc5893#section-2
@@ -10,9 +10,9 @@ module URI
         class << self
           def call(label)
             # Bidi rule 1
-            if bidi_class(label[0], "RTL")
+            if bidi_class(label[0].ord, "RTL")
               rtl = true
-            elsif bidi_class(label[0], "L")
+            elsif bidi_class(label[0].ord, "L")
               rtl = false
             else
               raise BidiError, "First codepoint in label #{label} must be directionality L, R or AL"
@@ -20,11 +20,11 @@ module URI
 
             valid_ending = false
             number_type = nil
-            label.each_char.with_index do |cp, idx|
+            label.each_codepoint.with_index do |cp, pos|
               if rtl
                 # Bidi rule 2
                 if bidi_class(cp, "L") || bidi_class(cp, "UNUSED")
-                  raise BidiError, "Invalid direction for codepoint at position #{idx + 1} in a right-to-left label"
+                  raise BidiError, "Invalid direction for codepoint at position #{pos + 1} in a right-to-left label"
                 end
 
                 # Bidi rule 3
@@ -42,7 +42,7 @@ module URI
               else
                 # Bidi rule 5
                 if bidi_class(cp, "RTL") || bidi_class(cp, "AN")
-                  raise BidiError, "Invalid direction for codepoint at position #{idx + 1} in a left-to-right label"
+                  raise BidiError, "Invalid direction for codepoint at position #{pos + 1} in a left-to-right label"
                 end
 
                 # Bidi rule 6
@@ -60,12 +60,13 @@ module URI
           end
 
           # https://www.rfc-editor.org/rfc/rfc5891.html#section-4.2.3.4
-          def check?(labels)
+          def check?(domain)
+            labels = domain.split(".", -1)
             domain = labels.map do |label|
-              if label.start_with?(ALABEL_PREFIX)
+              if label.start_with?(ACE_PREFIX)
                 begin
-                  Punycode.decode(label[ALABEL_PREFIX.length..])
-                rescue StandardError
+                  Punycode.decode(label[ACE_PREFIX.length..])
+                rescue PunycodeError
                   ""
                 end
               else
@@ -73,7 +74,7 @@ module URI
               end
             end.join(".")
 
-            domain.each_char do |cp|
+            domain.each_codepoint do |cp|
               return true if bidi_class(cp, "RTL") || bidi_class(cp, "AN")
             end
             false
@@ -81,8 +82,8 @@ module URI
 
           private
 
-          def bidi_class(cp, bidi_class)
-            return bidi_class if Intranges.contain?(cp.ord, BIDI_CLASSES[bidi_class])
+          def bidi_class(codepoint, bidi_class)
+            return bidi_class if Intranges.contain?(codepoint, BIDI_CLASSES[bidi_class])
 
             false
           end

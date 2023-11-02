@@ -32,26 +32,26 @@ namespace :idna do
     io = URI.parse(url).open
     File.write(File.join(__dir__, "..", "spec", "data", filename), io.read)
   end
+end
 
-  def generate_data_files
-    require_relative "idna_data"
-    require_relative "uts64_data"
+def generate_data_files
+  require_relative "idna_data"
+  require_relative "uts46_data"
 
-    dest_dir = ENV.fetch("DEST_DIR", ".")
-    FileUtils.mkdir_p(dest_dir)
-    target_filename = File.join(dest_dir, "idna.rb")
-    File.open(target_filename, "w") do |f|
-      IDNAData.new(ucdata).each_entry { |l| f.puts l }
-    end
-    target_filename = File.join(dest_dir, "uts46.rb")
-    File.open(target_filename, "w") do |f|
-      UTS64Data.new(ucdata).each_entry { |l| f.puts l }
-    end
+  dest_dir = ENV.fetch("DEST_DIR", ".")
+  FileUtils.mkdir_p(dest_dir)
+  target_filename = File.join(dest_dir, "idna.rb")
+  File.open(target_filename, "w") do |f|
+    IDNAData.new(ucdata).each_entry { |l| f.puts l }
   end
-
-  def ucdata
-    cache = ENV["CACHE_DIR"] || "tmp"
-    cache = nil if ENV["NO_CACHE"]
-    UnicodeData.new(ENV.fetch("VERSION", RbConfig::CONFIG["UNICODE_VERSION"]), cache)
+  target_filename = File.join(dest_dir, "uts46.rb")
+  File.open(target_filename, "w") do |f|
+    UTS46Data.new(ucdata).each_entry { |l| f.puts l }
   end
+end
+
+def ucdata
+  cache = ENV["CACHE_DIR"] || "tmp"
+  cache = nil if ENV["NO_CACHE"]
+  UnicodeData.new(ENV.fetch("VERSION", RbConfig::CONFIG["UNICODE_VERSION"]), cache)
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "UTS64" do
+RSpec.describe "UTS46" do
   describe "IdnaTestV2.txt" do
     tests = []
     File.open(File.join(File.dirname(__FILE__), "..", "data", "IdnaTestV2.txt"), "r") do |f|
@@ -50,11 +50,11 @@ RSpec.describe "UTS64" do
 
         if to_ascii_t_status == "[]"
           it "encodes transitionally to #{to_ascii_t}" do
-            expect(URI::IDNA.to_ascii(source, uts46_transitional: true)).to eq(to_ascii_t)
+            expect(URI::IDNA.to_ascii(source, transitional_processing: true)).to eq(to_ascii_t)
           end
         else
           it "raises an error while encoding transitionally: #{to_ascii_t_status}" do
-            expect { URI::IDNA.to_ascii(source, uts46_transitional: true) }.to raise_error(URI::IDNA::Error)
+            expect { URI::IDNA.to_ascii(source, transitional_processing: true) }.to raise_error(URI::IDNA::Error)
           end
         end
       end
