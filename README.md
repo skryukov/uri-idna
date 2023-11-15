@@ -256,7 +256,7 @@ To specify Unicode version, use `VERSION` environment variable, e.g. `VERSION=15
 
 By default, used Unicode version is the one used by the Ruby version (`RbConfig::CONFIG["UNICODE_VERSION"]`).
 
-To set directory for generated files, use `DATA_DIR` environment variable, e.g. `DATA_DIR=lib/uri/idna/data bundle exec rake idna:generate`.
+To set directory for generated files, use `DEST_DIR` environment variable, e.g. `DEST_DIR=lib/uri/idna/data bundle exec rake idna:generate`.
 
 Unicode data cached in the `tmp` directory by default, to change it, use `CACHE_DIR` environment variable, e.g. `CACHE_DIR=~/.cache/unicode_data bundle exec rake idna:generate`.
 
