@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.2.1] - 2023-11-15
+
 ### Changed
 
 - Various performance and memory optimizations. ([@skryukov])
