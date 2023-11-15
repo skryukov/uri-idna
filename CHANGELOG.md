@@ -7,21 +7,25 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+### Changed
+
+- Various performance and memory optimizations. ([@skryukov])
+
 ## [0.2.0] - 2023-11-14
 
 ### Added
 
-- WHATWG IDNA functions
+- WHATWG IDNA functions. ([@skryukov])
 
 ### Changed
 
-- **BREAKING!** Names of options updated to match UTS46 flags
-- Unicode version updated to 15.1
-- UTS46 functions now support Revision 31
+- **BREAKING!** Names of options updated to match UTS46 flags. ([@skryukov])
+- Unicode version updated to 15.1. ([@skryukov])
+- UTS46 functions now support Revision 31. ([@skryukov])
 
 ### Fixed
 
-- IDNA2008 functions now support not only labels, but full domains 
+- IDNA2008 functions now support not only labels, but full domains. ([@skryukov])
 
 ## [0.1.0] - 2023-08-05
 
