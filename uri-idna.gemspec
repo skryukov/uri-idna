@@ -6,9 +6,9 @@ Gem::Specification.new do |spec|
   spec.name = "uri-idna"
   spec.version = URI::IDNA::VERSION
   spec.authors = ["Svyatoslav Kryukov"]
-  spec.email = ["s.g.kryukov@yandex.ru"]
+  spec.email = ["me@skryukov.dev"]
 
-  spec.summary = "Internationalized Domain Names for Ruby (IDNA 2008 and UTS #46)"
+  spec.summary = "Internationalized Domain Names for Ruby (IDNA2008, UTS46 and WHATWG)"
   spec.description = "Internationalized Domain Names in Applications (IDNA)"
   spec.homepage = "https://github.com/skryukov/uri-idna"
   spec.license = "MIT"
