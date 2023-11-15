@@ -44,17 +44,13 @@ class UTS46Data
 
       status, mapping = UTS46_STATUSES[fields[0]]
 
-      if mapping
-        mapping = fields[1].split.map { |x| x.to_i(16) }.pack("U*")
-        mapping = mapping.gsub("\\", "\\\\\\").gsub('"', '\\\\"')
-      else
-        mapping = nil
-      end
+      mapping = mapping ? fields[1].split.map { |point| "0x#{point}" } : nil
+
       next if cp.value > 255 && last == [status, mapping]
 
       last = [status, mapping]
       if mapping
-        yield "[0x#{cp.value.to_s(16).upcase}, \"#{status}\", \"#{mapping}\"]"
+        yield "[0x#{cp.value.to_s(16).upcase}, \"#{status}\", [#{mapping.join(', ')}]]"
       else
         yield "[0x#{cp.value.to_s(16).upcase}, \"#{status}\"]"
       end

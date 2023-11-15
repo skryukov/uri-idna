@@ -17,6 +17,7 @@ module URI
 
           # https://datatracker.ietf.org/doc/html/rfc5892
           def check_contextj(label, cp, pos)
+            return false if cp < 256
             return false unless codepoint?(cp, "CONTEXTJ")
             return true if valid_contextj?(label, cp, pos)
 
@@ -25,6 +26,7 @@ module URI
 
           # https://datatracker.ietf.org/doc/html/rfc5892
           def check_contexto(label, cp, pos)
+            return false if cp < 183
             return false unless codepoint?(cp, "CONTEXTO")
             return true if valid_contexto?(label, cp, pos)
 
@@ -105,10 +107,14 @@ module URI
           end
 
           def script?(cp, script)
+            return false if cp < 256
+
             Intranges.contain?(cp, SCRIPTS[script])
           end
 
           def virama_combining_class?(cp)
+            return false if cp < 256
+
             Intranges.contain?(cp, VIRAMA_COMBINING_CLASSES)
           end
 

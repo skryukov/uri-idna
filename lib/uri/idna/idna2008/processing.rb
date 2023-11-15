@@ -45,12 +45,6 @@ module URI
           Validation::Bidi.call(label) if check_bidi?
         end
 
-        def check_bidi?
-          return @check_bidi if instance_variable_defined?(:@check_bidi)
-
-          @check_bidi = options.check_bidi? && Validation::Bidi.check?(domain_name)
-        end
-
         def punycode_decode(label)
           return label unless label.start_with?(ACE_PREFIX)
 
@@ -72,8 +66,8 @@ module URI
         end
 
         def call
-          alabels, alabel_trailing_dot = split_domain(alabel.encode("UTF-8").unicode_normalize(:nfc)) if alabel
-          ulabels, ulabel_trailing_dot = split_domain(ulabel.encode("UTF-8").unicode_normalize(:nfc)) if ulabel
+          alabels, alabel_trailing_dot = split_domain(alabel.encode("UTF-8").unicode_normalize!(:nfc)) if alabel
+          ulabels, ulabel_trailing_dot = split_domain(ulabel.encode("UTF-8").unicode_normalize!(:nfc)) if ulabel
 
           if alabels && ulabels && (alabels.size != ulabels.size || alabel_trailing_dot != ulabel_trailing_dot)
             raise Error, "alabel doesn't match ulabel"
@@ -128,7 +122,7 @@ module URI
       # # https://datatracker.ietf.org/doc/html/rfc5891#section-5
       class Lookup < Processing
         def call
-          domain = domain_name.encode("UTF-8").unicode_normalize(:nfc)
+          domain = domain_name.encode("UTF-8").unicode_normalize!(:nfc)
 
           result = process_labels(domain) do |label|
             orig_label = label

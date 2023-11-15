@@ -27,7 +27,7 @@ module URI
           # 4.2.3.1. Hyphen Restrictions
           # https://datatracker.ietf.org/doc/html/rfc5891#section-4.2.3.1
           def check_hyphen_sides(label)
-            return unless label[0] == "-" || label[-1] == "-"
+            return unless label.start_with?("-") || label.end_with?("-")
 
             raise Error, "Label must neither begin nor end with a U+002D HYPHEN-MINUS character"
           end
@@ -41,7 +41,9 @@ module URI
           # 4.2.3.2. Leading Combining Marks
           # https://datatracker.ietf.org/doc/html/rfc5891#section-4.2.3.2
           def check_leading_combining(label)
-            return unless Intranges.contain?(label[0].ord, INITIAL_COMBINERS)
+            cp = label[0].ord
+            return if cp < 256
+            return unless Intranges.contain?(cp, INITIAL_COMBINERS)
 
             raise Error, "Label begins with an illegal combining character"
           end
