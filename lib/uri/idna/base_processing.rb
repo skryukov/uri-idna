@@ -60,6 +60,12 @@ module URI
 
         [labels, trailing_dot]
       end
+
+      def check_bidi?
+        return @check_bidi if instance_variable_defined?(:@check_bidi)
+
+        @check_bidi = options.check_bidi? && Validation::Bidi.check?(domain_name)
+      end
     end
   end
 end

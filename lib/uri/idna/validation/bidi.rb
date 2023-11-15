@@ -61,22 +61,22 @@ module URI
 
           # https://www.rfc-editor.org/rfc/rfc5891.html#section-4.2.3.4
           def check?(domain)
-            labels = domain.split(".", -1)
-            domain = labels.map do |label|
+            domain.split(".").each do |label|
               if label.start_with?(ACE_PREFIX)
                 begin
-                  Punycode.decode(label[ACE_PREFIX.length..])
+                  label = Punycode.decode(label[ACE_PREFIX.length..])
                 rescue PunycodeError
-                  ""
+                  next
                 end
-              else
-                label
               end
-            end.join(".")
+              next if label.ascii_only?
 
-            domain.each_codepoint do |cp|
-              return true if bidi_class(cp, "RTL") || bidi_class(cp, "AN")
+              label.each_codepoint do |cp|
+                next if cp < 256
+                return true if bidi_class(cp, "RTL") || bidi_class(cp, "AN")
+              end
             end
+
             false
           end
 

@@ -8,14 +8,17 @@ module URI
     module UTS46
       # https://www.unicode.org/reports/tr46/#Processing
       class Processing < BaseProcessing
-        def call
-          domain = Mapping.call(
+        def initialize(domain_name, **options)
+          super
+          @domain_name = Mapping.call(
             domain_name,
-            transitional_processing: options.transitional_processing?,
-            use_std3_ascii_rules: options.use_std3_ascii_rules?,
+            transitional_processing: @options.transitional_processing?,
+            use_std3_ascii_rules: @options.use_std3_ascii_rules?,
           )
+        end
 
-          process_labels(domain) do |label|
+        def call
+          process_labels(domain_name) do |label|
             if label.start_with?(ACE_PREFIX)
               begin
                 label = punycode_decode(label)
@@ -39,12 +42,6 @@ module URI
 
         def options_class
           Options
-        end
-
-        def check_bidi?
-          return @check_bidi if instance_variable_defined?(:@check_bidi)
-
-          @check_bidi = options.check_bidi? && Validation::Bidi.check?(domain_name)
         end
 
         # https://www.unicode.org/reports/tr46/#Validity_Criteria

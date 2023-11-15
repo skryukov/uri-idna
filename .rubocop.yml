@@ -30,6 +30,10 @@ Style/NumericPredicate:
 Style/Documentation:
   Enabled: false
 
+Layout/LineLength:
+  Exclude:
+    - lib/uri/idna/data/uts46.rb
+
 Metrics:
   Enabled: false
 
