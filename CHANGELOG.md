@@ -37,7 +37,8 @@ and this project adheres to [Semantic Versioning].
 
 [@skryukov]: https://github.com/skryukov
 
-[Unreleased]: https://github.com/skryukov/uri-idna/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/skryukov/uri-idna/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/skryukov/uri-idna/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/skryukov/uri-idna/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/skryukov/uri-idna/commits/v0.1.0
 
