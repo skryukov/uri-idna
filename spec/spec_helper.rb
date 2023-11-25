@@ -13,3 +13,15 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 end
+
+RSpec.shared_examples "valid" do |input|
+  it "does not raise an error for '#{input}'" do
+    expect { described_class.call(input) }.not_to raise_error
+  end
+end
+
+RSpec.shared_examples "invalid" do |input|
+  it "raises an error for '#{input}'" do
+    expect { described_class.call(input) }.to raise_error(URI::IDNA::Error)
+  end
+end

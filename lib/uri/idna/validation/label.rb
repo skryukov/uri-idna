@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "../intranges"
-require_relative "../data/idna"
-
 module URI
   module IDNA
     module Validation
@@ -11,7 +8,7 @@ module URI
           # 4.1. Input to IDNA Registration
           # https://datatracker.ietf.org/doc/html/rfc5891#section-4.1
           def check_nfc(label)
-            return if label.unicode_normalized?(:nfc)
+            return if label.ascii_only? || label.unicode_normalized?(:nfc)
 
             raise Error, "Label must be in Unicode Normalization Form NFC"
           end
@@ -36,16 +33,6 @@ module URI
             return unless label.start_with?(ACE_PREFIX)
 
             raise Error, "Label must not begin with `xn--`"
-          end
-
-          # 4.2.3.2. Leading Combining Marks
-          # https://datatracker.ietf.org/doc/html/rfc5891#section-4.2.3.2
-          def check_leading_combining(label)
-            cp = label[0].ord
-            return if cp < 256
-            return unless Intranges.contain?(cp, INITIAL_COMBINERS)
-
-            raise Error, "Label begins with an illegal combining character"
           end
 
           def check_dot(label)

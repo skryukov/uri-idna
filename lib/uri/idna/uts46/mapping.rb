@@ -8,52 +8,54 @@ module URI
       # https://www.unicode.org/reports/tr46/#IDNA_Mapping_Table
       module Mapping
         class << self
+          STATUS_D_REGEX = Regexp.new(REGEX_D_STRING, Regexp::EXTENDED).freeze
+          REGEX_STD3_M_REGEX = Regexp.new(REGEX_STD3_M_STRING, Regexp::EXTENDED).freeze
+
+          MAP_REGEX = Regexp.new("#{REGEX_M_STRING}|#{REGEX_I_STRING}").freeze
+          REGEX_NOT_V = Regexp.new("[^#{REGEX_V_STRING}]").freeze
+          REGEX_NOT_VD = Regexp.new("[^#{REGEX_V_STRING}|#{REGEX_D_STRING}]").freeze
+          REGEX_NOT_V3 = Regexp.new("[^#{REGEX_V_STRING}|#{REGEX_STD3_M_STRING}|#{REGEX_STD3_V_STRING}]").freeze
+          REGEX_NOT_VD3 = Regexp.new(
+            "[^#{REGEX_V_STRING}|#{REGEX_D_STRING}|#{REGEX_STD3_M_STRING}|#{REGEX_STD3_V_STRING}]",
+          ).freeze
+
           def call(domain_name, transitional_processing: false, use_std3_ascii_rules: true)
-            output = []
-            domain_name.each_codepoint do |codepoint|
-              _, status, replacement = status(codepoint)
-              case status
-              when "V", "X" # valid, disallowed
-                output << codepoint
-              when "M" # mapped
-                output += if transitional_processing && codepoint == 7838
-                            [115, 115]
-                          else
-                            replacement
-                          end
-              when "D" # deviation
-                if transitional_processing
-                  output += replacement
-                else
-                  output << codepoint
-                end
-              when "3" # disallowed_STD3_valid, disallowed_STD3_mapped
-                if use_std3_ascii_rules || !replacement
-                  output << codepoint
-                else
-                  output += replacement
-                end
-              when "I" # ignored
-                next
+            return domain_name.downcase if domain_name.ascii_only?
+
+            output = domain_name.gsub(MAP_REGEX) do |match|
+              if transitional_processing && match == "\u1E9E"
+                "ss"
+              else
+                REPLACEMENTS[match]
               end
             end
-            output.pack("U*").unicode_normalize!(:nfc)
+            output.gsub!(STATUS_D_REGEX, REPLACEMENTS) if transitional_processing
+            output.gsub!(REGEX_STD3_M_REGEX, REPLACEMENTS) unless use_std3_ascii_rules
+
+            output.ascii_only? ? output : output.unicode_normalize!(:nfc)
           end
 
-          def validate_status(label, cp, pos, transitional_processing:, use_std3_ascii_rules:)
-            _, status, = status(cp)
-            return if status == "V"
-            return if !transitional_processing && status == "D"
-            return if !use_std3_ascii_rules && status == "3"
+          def validate_label_status(label, transitional_processing:, use_std3_ascii_rules:)
+            regex =
+              if transitional_processing && use_std3_ascii_rules
+                REGEX_NOT_V
+              elsif transitional_processing
+                REGEX_NOT_V3
+              elsif use_std3_ascii_rules
+                REGEX_NOT_VD
+              else
+                REGEX_NOT_VD3
+              end
 
-            raise InvalidCodepointError, Validation::Codepoint.cp_error_message(label, cp, pos)
+            return unless (pos = label.index(regex))
+
+            raise InvalidCodepointError, error_message(label, pos)
           end
 
-          def status(codepoint)
-            return UTS46_DATA[codepoint] if codepoint < 256
+          private
 
-            index = (UTS46_DATA.bsearch_index { |x| x[0] > codepoint } || UTS46_DATA.length) - 1
-            UTS46_DATA[index] || []
+          def error_message(label, pos)
+            format("Codepoint U+%04X at position %d of %p not allowed in UTS46", label[pos].ord, pos + 1, label)
           end
         end
       end

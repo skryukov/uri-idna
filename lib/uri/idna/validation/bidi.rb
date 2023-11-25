@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "../data/bidi_classes"
+
 module URI
   module IDNA
     module Validation
@@ -8,55 +10,46 @@ module URI
       # https://datatracker.ietf.org/doc/html/rfc5893#section-2
       module Bidi
         class << self
+          BIDI_R1_RTL = Regexp.new(BIDI_CLASSES["RTL"]).freeze
+          BIDI_R1_LTR = Regexp.new(BIDI_CLASSES["L"]).freeze
+          BIDI_R2 = Regexp.new("#{BIDI_CLASSES['L']}|#{BIDI_CLASSES['UNUSED']}").freeze
+          BIDI_R3 = Regexp.new(
+            "(?:#{"#{BIDI_CLASSES['RTL']}|#{BIDI_CLASSES['AN']}|#{BIDI_CLASSES['EN']}"})#{BIDI_CLASSES['NSM']}*\\z",
+          ).freeze
+          BIDI_R4_EN = Regexp.new(BIDI_CLASSES["EN"]).freeze
+          BIDI_R4_AN = Regexp.new(BIDI_CLASSES["AN"]).freeze
+          BIDI_R5 = Regexp.new("#{BIDI_CLASSES['RTL']}|#{BIDI_CLASSES['AN']}").freeze
+          BIDI_R6 = Regexp.new("(?:#{"#{BIDI_CLASSES['L']}|#{BIDI_CLASSES['EN']}"})#{BIDI_CLASSES['NSM']}*\\z").freeze
+
           def call(label)
             # Bidi rule 1
-            if bidi_class(label[0].ord, "RTL")
-              rtl = true
-            elsif bidi_class(label[0].ord, "L")
+            if BIDI_R1_LTR.match?(label[0])
               rtl = false
+            elsif BIDI_R1_RTL.match?(label[0])
+              rtl = true
             else
               raise BidiError, "First codepoint in label #{label} must be directionality L, R or AL"
             end
 
-            valid_ending = false
-            number_type = nil
-            label.each_codepoint.with_index do |cp, pos|
-              if rtl
-                # Bidi rule 2
-                if bidi_class(cp, "L") || bidi_class(cp, "UNUSED")
-                  raise BidiError, "Invalid direction for codepoint at position #{pos + 1} in a right-to-left label"
-                end
-
-                # Bidi rule 3
-                direction = bidi_class(cp, "RTL") || bidi_class(cp, "EN") || bidi_class(cp, "AN")
-                if direction
-                  valid_ending = true
-                elsif !bidi_class(cp, "NSM")
-                  valid_ending = false
-                end
-                # Bidi rule 4
-                if %w[EN AN].include?(direction)
-                  number_type ||= direction
-                  raise BidiError, "Can not mix numeral types in a right-to-left label" if number_type != direction
-                end
-              else
-                # Bidi rule 5
-                if bidi_class(cp, "RTL") || bidi_class(cp, "AN")
-                  raise BidiError, "Invalid direction for codepoint at position #{pos + 1} in a left-to-right label"
-                end
-
-                # Bidi rule 6
-                if bidi_class(cp, "L") || bidi_class(cp, "EN")
-                  valid_ending = true
-                elsif !bidi_class(cp, "NSM")
-                  valid_ending = false
-                end
+            if rtl
+              # Bidi rule 2
+              if (pos = label.index(BIDI_R2))
+                raise BidiError, "Invalid direction for codepoint at position #{pos + 1} in a right-to-left label"
               end
+              # Bidi rule 3
+              raise BidiError, "Label ends with illegal codepoint directionality" unless label.match?(BIDI_R3)
+              # Bidi rule 4
+              if label.match?(BIDI_R4_EN) && label.match?(BIDI_R4_AN)
+                raise BidiError, "Can not mix numeral types in a right-to-left label"
+              end
+            else
+              # Bidi rule 5
+              if (pos = label.index(BIDI_R5))
+                raise BidiError, "Invalid direction for codepoint at position #{pos + 1} in a left-to-right label"
+              end
+              # Bidi rule 6
+              raise BidiError, "Label ends with illegal codepoint directionality" unless label.match?(BIDI_R6)
             end
-
-            raise BidiError, "Label ends with illegal codepoint directionality" unless valid_ending
-
-            true
           end
 
           # https://www.rfc-editor.org/rfc/rfc5891.html#section-4.2.3.4
@@ -71,19 +64,8 @@ module URI
               end
               next if label.ascii_only?
 
-              label.each_codepoint do |cp|
-                next if cp < 256
-                return true if bidi_class(cp, "RTL") || bidi_class(cp, "AN")
-              end
+              return true if label.match?(BIDI_R5)
             end
-
-            false
-          end
-
-          private
-
-          def bidi_class(codepoint, bidi_class)
-            return bidi_class if Intranges.contain?(codepoint, BIDI_CLASSES[bidi_class])
 
             false
           end

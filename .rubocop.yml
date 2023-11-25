@@ -49,3 +49,8 @@ RSpec/MultipleExpectations:
 
 RSpec/NestedGroups:
   Enabled: false
+
+RSpec/FilePath:
+  Exclude:
+    - spec/uri/idna/validation/contexto_spec.rb
+    - spec/uri/idna/validation/contextj_spec.rb

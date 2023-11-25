@@ -13,6 +13,7 @@ module URI
         DAMP = 700
         INITIAL_BIAS = 72
         INITIAL_N = 0x80
+        ADAPT_THRESHOLD = ((BASE - TMIN) * TMAX) / 2
 
         DELIMITER = 0x2D
         MAXINT = 0x7FFFFFFF
@@ -30,7 +31,9 @@ module URI
         end
 
         def encode_digit(d)
-          d + 22 + 75 * (d < 26 ? 1 : 0)
+          return d + 22 if d >= 26
+
+          d + 97
         end
 
         def adapt(delta, num_points, first_time)
@@ -38,7 +41,7 @@ module URI
           delta += (delta / num_points)
 
           k = 0
-          while delta > (((BASE - TMIN) * TMAX) / 2)
+          while delta > ADAPT_THRESHOLD
             delta /= BASE - TMIN
             k += BASE
           end
@@ -47,18 +50,17 @@ module URI
 
         def encode(input)
           input = input.codepoints
-          output = []
 
           n = INITIAL_N
           delta = 0
           bias = INITIAL_BIAS
 
-          input.each { |cp| output << cp if cp < 0x80 }
+          output = input.select { |cp| cp < 0x80 }
           h = b = output.length
 
           output << DELIMITER if b > 0
-
-          while h < input.length
+          input_length = input.length
+          while h < input_length
             m = MAXINT
             input.each do |cp|
               m = cp if cp >= n && cp < m
@@ -116,15 +118,15 @@ module URI
 
           b = input.rindex(DELIMITER) || 0
 
-          0.upto(b - 1) do |idx|
-            cp = input[idx]
+          input[0, b].each do |cp|
             raise PunycodeError, "Invalid input" unless cp < 0x80
 
             output << cp
           end
 
           inc = b > 0 ? b + 1 : 0
-          while inc < input.length
+          input_length = input.length
+          while inc < input_length
             old_i = i
             w = 1
             k = BASE

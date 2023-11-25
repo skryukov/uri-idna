@@ -2,12 +2,18 @@
 
 require_relative "mapping"
 require_relative "options"
+require_relative "../validation/contextj"
+require_relative "../validation/leading_combining"
 
 module URI
   module IDNA
     module UTS46
       # https://www.unicode.org/reports/tr46/#Processing
       class Processing < BaseProcessing
+        def self.options_class
+          Options
+        end
+
         def initialize(domain_name, **options)
           super
           @domain_name = Mapping.call(
@@ -40,10 +46,6 @@ module URI
 
         private
 
-        def options_class
-          Options
-        end
-
         # https://www.unicode.org/reports/tr46/#Validity_Criteria
         def validate(label, transitional_processing: options.transitional_processing?)
           return if label.empty?
@@ -56,16 +58,13 @@ module URI
             Validation::Label.check_ace_prefix(label)
           end
           Validation::Label.check_dot(label)
-          Validation::Label.check_leading_combining(label)
-
-          label.each_codepoint.with_index do |cp, pos|
-            Mapping.validate_status(
-              label, cp, pos,
-              transitional_processing: transitional_processing, use_std3_ascii_rules: options.use_std3_ascii_rules?
-            )
-
-            Validation::Codepoint.check_contextj(label, cp, pos) if options.check_joiners?
-          end
+          Validation::LeadingCombining.call(label)
+          Mapping.validate_label_status(
+            label,
+            transitional_processing: transitional_processing,
+            use_std3_ascii_rules: options.use_std3_ascii_rules?,
+          )
+          Validation::ContextJ.call(label) if options.check_joiners?
           Validation::Bidi.call(label) if check_bidi?
         end
       end
@@ -76,7 +75,7 @@ module URI
 
       # https://www.unicode.org/reports/tr46/#ToASCII
       class ToASCII < Processing
-        def options_class
+        def self.options_class
           ToASCIIOptions
         end
 

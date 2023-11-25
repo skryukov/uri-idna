@@ -186,4 +186,21 @@ RSpec.describe URI::IDNA::UTS46::ToASCII do
       end
     end
   end
+
+  context "with multiple flags" do
+    let(:domain) { "Bl_oß.de" }
+    let(:ascii_domain) { "bl_oss.de" }
+
+    it "raises an error" do
+      expect { call }.to raise_error(URI::IDNA::Error)
+    end
+
+    context "with use_std3_ascii_rules: false, transitional_processing: true" do
+      let(:options) { { use_std3_ascii_rules: false, transitional_processing: true } }
+
+      it "returns the domain" do
+        expect(call).to eq(ascii_domain)
+      end
+    end
+  end
 end

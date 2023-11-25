@@ -111,5 +111,12 @@ RSpec.describe "Punycode" do
         expect(URI::IDNA::Punycode.decode(encoded)).to eq(decoded)
       end
     end
+
+    context "with upcased digits" do
+      it "returns same result" do
+        encoded = "d9juau41awczczp"
+        expect(URI::IDNA::Punycode.decode(encoded.upcase)).to eq(URI::IDNA::Punycode.decode(encoded))
+      end
+    end
   end
 end
