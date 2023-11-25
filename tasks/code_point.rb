@@ -57,6 +57,16 @@ class CodePoint
     "U+%04X" % value
   end
 
+  def to_utf8
+    if value > 0xFFFF
+      "\\u{#{value.to_s(16).upcase}}"
+    elsif value >= 0x7f || value < 0x20
+      "\\u#{value.to_s(16).upcase.rjust(4, '0')}"
+    else
+      value.chr.sub(/[\\"]/, "\\\\\\\&").sub("[", "\\\\\\\\[")
+    end
+  end
+
   def casefold(s)
     s.unpack("U*").map { |x| ucdata.ucd_cf[x] || x }.flatten.pack("U*")
   end

@@ -239,6 +239,15 @@ RSpec.describe URI::IDNA::IDNA2008::Registration do
     end
   end
 
+  context "with unmatched alabel and ulabel" do
+    let(:alabel) { "hello.com" }
+    let(:ulabel) { "example.hello.com" }
+
+    it "raises an error" do
+      expect { call }.to raise_error(URI::IDNA::Error)
+    end
+  end
+
   describe "Test cases from RFCs" do
     tests = [
       [nil, "all-ascii", "all-ascii"],

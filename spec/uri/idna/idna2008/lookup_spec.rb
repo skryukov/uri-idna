@@ -199,6 +199,16 @@ RSpec.describe URI::IDNA::IDNA2008::Lookup do
     end
   end
 
+  context "with upcased punycode" do
+    let(:alabel) { "xn--HELLO.jp" }
+    let(:ulabel) { "xn--HELLO.jp" }
+
+    it "raises an error" do
+      expect { call }.to raise_error(URI::IDNA::Error)
+      expect { call_ulabel }.to raise_error(URI::IDNA::Error)
+    end
+  end
+
   describe "Test cases from RFCs" do
     tests = [
       ["all-ascii.com", "all-ascii.com"],

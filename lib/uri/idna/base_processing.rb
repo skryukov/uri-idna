@@ -1,27 +1,33 @@
 # frozen_string_literal: true
 
 require_relative "validation/label"
-require_relative "validation/codepoint"
 require_relative "validation/bidi"
 
 module URI
   module IDNA
     class BaseProcessing
+      class << self
+        def default_options
+          @default_options ||= options_class.new
+        end
+
+        def options_class
+          raise NotImplementedError, "Implement #options_class method"
+        end
+      end
+
       def initialize(domain_name, **options)
         @domain_name = domain_name
-        @options = options_class.new(**options)
+        @options = options.any? ? self.class.options_class.new(**options) : self.class.default_options
       end
 
       private
 
       attr_reader :domain_name, :options
 
-      def options_class
-        raise NotImplementedError, "Implement #options_class method"
-      end
-
       def punycode_decode(label)
         raise Error, "Label contains non-ASCII code point" unless label.ascii_only?
+        raise Error, "A-label must not end with a hyphen" if label[-1] == "-"
 
         code = label[ACE_PREFIX.length..]
         raise Error, "Malformed A-label, no Punycode eligible content found" if code.empty?

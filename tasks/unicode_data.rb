@@ -27,6 +27,8 @@ class UnicodeData
   end
 
   def codepoints
+    return enum_for(:codepoints) unless block_given?
+
     (0..@max).each do |i|
       yield CodePoint.new(i, ucdata: self)
     end
@@ -88,7 +90,7 @@ class UnicodeData
     @ucd_cf = {}
     ucdfile("CaseFolding.txt").each do |cp, fields|
       cp.each do |i|
-        @ucd_cf[i] = fields[1].split(" ").map { |x| x.to_i(16) } if %w[C F].include?(fields[0])
+        @ucd_cf[i] = fields[1].split(" ").map(&:hex) if %w[C F].include?(fields[0])
       end
     end
   end
@@ -156,10 +158,10 @@ class UnicodeData
         codepoint, *fields = line.split(/\s*;\s*/, -1)
         codepoint =
           if codepoint.include?("..")
-            left, right = codepoint.split("..").map { |value| value.to_i(16) }
+            left, right = codepoint.split("..").map(&:hex)
             left..right
           else
-            [codepoint.to_i(16)]
+            [codepoint.hex]
           end
         result[codepoint] ||= []
         result[codepoint] += fields

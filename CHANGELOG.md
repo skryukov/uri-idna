@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+### Changed
+
+- Internal implementation moved to regex-based algorithm to improve performance. ([@skryukov])
+
 ## [0.2.1] - 2023-11-15
 
 ### Changed

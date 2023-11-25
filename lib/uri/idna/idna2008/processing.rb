@@ -1,16 +1,20 @@
 # frozen_string_literal: true
 
 require_relative "options"
+require_relative "../validation/contextj"
+require_relative "../validation/contexto"
+require_relative "../validation/idna_permitted"
+require_relative "../validation/leading_combining"
 
 module URI
   module IDNA
     module IDNA2008
       class Processing < BaseProcessing
-        private
-
-        def options_class
+        def self.options_class
           Options
         end
+
+        private
 
         def validate(label)
           return if label.empty?
@@ -21,34 +25,15 @@ module URI
           else
             Validation::Label.check_ace_prefix(label)
           end
-          Validation::Label.check_leading_combining(label) if options.leading_combining?
-
-          label.each_codepoint.with_index do |cp, pos|
-            begin
-              next if Validation::Codepoint.check_contextj(label, cp, pos)
-            rescue InvalidCodepointContextError => e
-              next unless options.check_joiners?
-
-              raise e
-            end
-
-            begin
-              next if Validation::Codepoint.check_contexto(label, cp, pos)
-            rescue InvalidCodepointContextError => e
-              next unless options.check_others?
-
-              raise e
-            end
-
-            Validation::Codepoint.check_idna_validity(label, cp, pos)
-          end
+          Validation::LeadingCombining.call(label) if options.leading_combining?
+          Validation::ContextJ.call(label) if options.check_joiners?
+          Validation::ContextO.call(label) if options.check_others?
+          Validation::IDNAPermitted.call(label)
           Validation::Bidi.call(label) if check_bidi?
         end
 
         def punycode_decode(label)
           return label unless label.start_with?(ACE_PREFIX)
-
-          raise Error, "A-label must not end with a hyphen" if label[-1] == "-"
 
           super
         end
@@ -95,9 +80,9 @@ module URI
 
             Validation::Label.check_length(a_ulabel) if options.verify_dns_length?
 
-            if alabel && ulabel && (a_ulabel != alabel) && (a_ulabel != alabel)
+            if alabel && ulabel && a_ulabel != alabel
               raise Error,
-                    "Provided alabel #{alabel.inspect} doesn't match de-punycoded ulabel #{u_alabel.inspect}"
+                    "Provided alabel #{alabel.inspect} doesn't match de-punycoded ulabel #{a_ulabel.inspect}"
             end
 
             a_ulabel
