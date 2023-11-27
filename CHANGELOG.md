@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [Unreleased]
+
+### Fixed
+
+- Update comment in data-files to mention rake command. ([@skryukov])
+
 ## [0.2.2] - 2023-11-25
 
 ### Changed
