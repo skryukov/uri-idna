@@ -20,7 +20,8 @@ class IDNAGenerator < BaseGenerator
   def data
     @data ||= { bidi_classes: {}, codepoint_classes: {}, combiners: [], virama_combining_classes: [] }.tap do |hash|
       ucdata.codepoints do |cp|
-        next unless [cp.value].pack("U").valid_encoding?
+        # skip UTF-16 surrogates
+        next if cp.value >= 0xd800 && cp.value <= 0xdfff
 
         bidi_class = BIDI_MAPPING[cp.bidi_class] || "UNUSED"
         hash[:bidi_classes][bidi_class] ||= []
