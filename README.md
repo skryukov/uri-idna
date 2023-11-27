@@ -260,6 +260,8 @@ To set directory for generated files, use `DEST_DIR` environment variable, e.g. 
 
 Unicode data cached in the `tmp` directory by default, to change it, use `CACHE_DIR` environment variable, e.g. `CACHE_DIR=~/.cache/unicode_data bundle exec rake idna:generate`.
 
+_Note: `rake idna:generate` might generate different results on different versions of Ruby due to usage of built-in Unicode normalization methods._
+
 ### Inspect Unicode data
 
 To inspect Unicode data, run `bundle exec rake 'idna:inspect[<HEX_CODE>]'`.
