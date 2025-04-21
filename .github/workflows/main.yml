@@ -15,11 +15,11 @@ jobs:
       BUNDLE_JOBS: 4
       BUNDLE_RETRY: 3
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.2"
+          ruby-version: "3.4"
           bundler-cache: true
       - name: Run RuboCop
         run: bundle exec rubocop
@@ -33,6 +33,8 @@ jobs:
     strategy:
       matrix:
         ruby:
+          - "3.4"
+          - "3.3"
           - "3.2"
           - "3.1"
           - "3.0"
@@ -40,7 +42,7 @@ jobs:
           - "jruby"
           - "truffleruby"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
