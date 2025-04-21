@@ -1,5 +1,6 @@
-require:
+plugins:
   - rubocop-rake
+  - rubocop-capybara
   - rubocop-rspec
 
 AllCops:
@@ -50,7 +51,7 @@ RSpec/MultipleExpectations:
 RSpec/NestedGroups:
   Enabled: false
 
-RSpec/FilePath:
+RSpec/SpecFilePathFormat:
   Exclude:
     - spec/uri/idna/validation/contexto_spec.rb
     - spec/uri/idna/validation/contextj_spec.rb
