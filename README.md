@@ -155,7 +155,7 @@ char.downcase.ord
 #=> 12068
 
 # but UTS46 mapping does it's thing:
-URI::IDNA::UTS46::Mapping.call(char).ord 
+URI::IDNA::UTS46::Mapping.call(char).ord
 #=> 22823
 
 # so here is a full example:
@@ -203,7 +203,7 @@ URI::IDNA.whatwg_to_ascii("2003_rules.com")
 
 ##### Options
 
-- `be_strict`: `true` - `be_strict`: `true` – defines value of `use_std3_ascii_rules` UTS46 option.
+- `be_strict`: `true` - defines value of `use_std3_ascii_rules` UTS46 option.
 
 ```ruby
 require "uri/idna"
