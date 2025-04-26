@@ -11,7 +11,7 @@ class BaseGenerator
   end
 
   def render(name = nil)
-    template = File.join(__dir__, "templates", (name || template_name))
+    template = File.join(__dir__, "templates", name || template_name)
     erb = ERB.new(File.read(template), trim_mode: "-")
 
     erb.result(binding)
