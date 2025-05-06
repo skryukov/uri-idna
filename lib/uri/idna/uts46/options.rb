@@ -53,6 +53,10 @@ module URI
         def ignore_invalid_punycode?
           (@flags & IGNORE_INVALID_PUNYCODE) != 0
         end
+
+        def verify_dns_length?
+          false
+        end
       end
 
       # Options for ToASCII operation

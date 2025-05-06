@@ -300,7 +300,7 @@ XN--A-Ä.PT; xn--a-ä.pt; [P4]; xn--xn--a--gua.pt; ; ;  # xn--a-ä.pt
 XN--A-A\u0308.PT; xn--a-ä.pt; [P4]; xn--xn--a--gua.pt; ; ;  # xn--a-ä.pt
 Xn--A-A\u0308.pt; xn--a-ä.pt; [P4]; xn--xn--a--gua.pt; ; ;  # xn--a-ä.pt
 Xn--A-Ä.pt; xn--a-ä.pt; [P4]; xn--xn--a--gua.pt; ; ;  # xn--a-ä.pt
-xn--xn--a--gua.pt; xn--a-ä.pt; [V2]; xn--xn--a--gua.pt; ; ;  # xn--a-ä.pt
+xn--xn--a--gua.pt; xn--a-ä.pt; [V2, V4]; xn--xn--a--gua.pt; ; ;  # xn--a-ä.pt
 日本語。ＪＰ; 日本語.jp; ; xn--wgv71a119e.jp; ; ;  # 日本語.jp
 日本語。JP; 日本語.jp; ; xn--wgv71a119e.jp; ; ;  # 日本語.jp
 日本語。jp; 日本語.jp; ; xn--wgv71a119e.jp; ; ;  # 日本語.jp
