@@ -45,7 +45,7 @@ module URI
         labels, trailing_dot = split_domain(domain)
 
         labels.map! do |label|
-          raise Error, "Empty label" if label.empty?
+          raise Error, "Empty label" if label.empty? && options.verify_dns_length?
 
           yield label
         end
@@ -62,7 +62,7 @@ module URI
         labels = domain.split(".", -1)
         trailing_dot = labels[-1] && labels[-1].empty? ? labels.pop : false
 
-        raise Error, "Empty domain" if labels.empty? || labels == [""]
+        raise Error, "Empty domain" if (labels.empty? || labels == [""]) && options.verify_dns_length?
 
         [labels, trailing_dot]
       end
