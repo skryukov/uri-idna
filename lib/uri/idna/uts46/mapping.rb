@@ -13,10 +13,10 @@ module URI
 
           MAP_REGEX = Regexp.new("#{REGEX_M_STRING}|#{REGEX_I_STRING}").freeze
           REGEX_NOT_V = Regexp.new("[^#{REGEX_V_STRING}]").freeze
-          REGEX_NOT_VD = Regexp.new("[^#{REGEX_V_STRING}|#{REGEX_D_STRING}]").freeze
-          REGEX_NOT_V3 = Regexp.new("[^#{REGEX_V_STRING}|#{REGEX_STD3_M_STRING}|#{REGEX_STD3_V_STRING}]").freeze
+          REGEX_NOT_VD = Regexp.new("[^#{REGEX_V_STRING}#{REGEX_D_STRING}]").freeze
+          REGEX_NOT_V3 = Regexp.new("[^#{REGEX_V_STRING}#{REGEX_STD3_M_STRING}#{REGEX_STD3_V_STRING}]").freeze
           REGEX_NOT_VD3 = Regexp.new(
-            "[^#{REGEX_V_STRING}|#{REGEX_D_STRING}|#{REGEX_STD3_M_STRING}|#{REGEX_STD3_V_STRING}]",
+            "[^#{REGEX_V_STRING}#{REGEX_D_STRING}#{REGEX_STD3_M_STRING}#{REGEX_STD3_V_STRING}]",
           ).freeze
 
           def call(domain_name, transitional_processing: false, use_std3_ascii_rules: true)
