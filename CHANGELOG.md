@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.1] - 2025-06-17
+
+### Fixed
+
+- Fix Ruby warnings. ([@y-yagi])
+
 ## [0.3.0] - 2025-05-09
 
 ### Fixed
@@ -49,8 +55,10 @@ and this project adheres to [Semantic Versioning].
 - Initial implementation. ([@skryukov])
 
 [@skryukov]: https://github.com/skryukov
+[@y-yagi]: https://github.com/y-yagi
 
-[Unreleased]: https://github.com/skryukov/uri-idna/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/skryukov/uri-idna/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/skryukov/uri-idna/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/skryukov/uri-idna/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/skryukov/uri-idna/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/skryukov/uri-idna/compare/v0.2.0...v0.2.1
