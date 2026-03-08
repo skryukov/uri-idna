@@ -4,7 +4,8 @@ require "open-uri"
 
 class UnicodeData
   UCD_URL = "https://www.unicode.org/Public/%<version>s/ucd/%<filename>s"
-  UTS46_URL = "https://www.unicode.org/Public/idna/%<version>s/%<filename>s"
+  UTS46_URL = "https://www.unicode.org/Public/%<version>s/idna/%<filename>s"
+  UTS46_URL_V16_AND_EARLIER = "https://www.unicode.org/Public/idna/%<version>s/%<filename>s"
 
   attr_reader :ucd_cf, :ucd_data, :ucd_props, :ucd_block, :ucd_hst, :ucd_as, :ucd_s, :ucd_idnamt, :version,
               :system_version
@@ -14,6 +15,7 @@ class UnicodeData
     @system_version = RbConfig::CONFIG["UNICODE_VERSION"]
     @cache = cache
     @max = 0
+    @uts46_url = Gem::Version.new(@version) >= Gem::Version.new("17.0.0") ? UTS46_URL : UTS46_URL_V16_AND_EARLIER
 
     load_unicode_data
     load_prop_list
@@ -125,7 +127,7 @@ class UnicodeData
 
   def load_uts46_mapping
     @ucd_idnamt = {}
-    ucdfile("IdnaMappingTable.txt", url_base: UTS46_URL).each do |cp, fields|
+    ucdfile("IdnaMappingTable.txt", url_base: @uts46_url).each do |cp, fields|
       cp.each do |i|
         @ucd_idnamt[i] = fields
       end
