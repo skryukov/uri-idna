@@ -17,13 +17,14 @@ module URI
 
         DELIMITER = 0x2D
         MAXINT = 0x7FFFFFFF
+        MAX_CODE_POINT = 0x10FFFF
 
         def decode_digit(cp)
-          if cp - 48 < 10
+          if cp >= 48 && cp < 58
             cp - 22
-          elsif cp - 65 < 26
+          elsif cp >= 65 && cp < 91
             cp - 65
-          elsif cp - 97 < 26
+          elsif cp >= 97 && cp < 123
             cp - 97
           else
             BASE
@@ -157,6 +158,8 @@ module URI
             raise PunycodeError, "Arithmetic overflow" if (i / (out + 1)) > MAXINT - n
 
             n += i / (out + 1)
+            raise PunycodeError, "Invalid code point" if n > MAX_CODE_POINT || (n >= 0xD800 && n <= 0xDFFF)
+
             i %= (out + 1)
 
             output.insert(i, n)

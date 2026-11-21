@@ -103,6 +103,23 @@ RSpec.describe URI::IDNA do
 
       it { is_expected.to eq(input) }
     end
+
+    context "when the A-label has characters that are not Punycode digits" do
+      let(:input) { "xn--a-:.com" }
+      let(:options) { { use_std3_ascii_rules: false } }
+
+      it "raises an error" do
+        expect { to_unicode }.to raise_error(URI::IDNA::Error)
+      end
+    end
+
+    context "when the A-label decodes to a code point above U+10FFFF" do
+      let(:input) { "xn--gu34hj6d.com" }
+
+      it "raises an error" do
+        expect { to_unicode }.to raise_error(URI::IDNA::Error)
+      end
+    end
   end
 
   describe ".to_ascii" do
