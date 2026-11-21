@@ -118,5 +118,22 @@ RSpec.describe "Punycode" do
         expect(URI::IDNA::Punycode.decode(encoded.upcase)).to eq(URI::IDNA::Punycode.decode(encoded))
       end
     end
+
+    context "with characters that are not base-36 digits" do
+      %w[a-: a-_ a-! ab-@ abc-_b ls8h-` a-{ a-~].push("a-\t").each do |encoded|
+        it "raises an error for #{encoded.inspect}" do
+          expect { URI::IDNA::Punycode.decode(encoded) }.to raise_error(URI::IDNA::PunycodeError)
+        end
+      end
+    end
+
+    context "with a code point outside of Unicode scalar values" do
+      # "gu34hj6d" decodes to U+133F2F, "a-rc4g" to "a" followed by U+D800
+      %w[gu34hj6d a-rc4g].each do |encoded|
+        it "raises an error for #{encoded.inspect}" do
+          expect { URI::IDNA::Punycode.decode(encoded) }.to raise_error(URI::IDNA::PunycodeError)
+        end
+      end
+    end
   end
 end
